@@ -1,0 +1,62 @@
+version: '3'
+services:
+  certbot:
+    image: certbot/dns-ovh:v1.31.0
+    command: |
+      certonly
+      --dns-ovh
+      --dns-ovh-credentials /ovh.ini
+      --dns-ovh-propagation-seconds 60
+      -d ${PUBLIC_DNS}
+    volumes:
+      - type: bind
+        source: ./cert/ovh.ini
+        target: /ovh.ini
+        read_only: true
+      - ./cert/etc-letsencrypt:/etc/letsencrypt
+      - ./cert/var-lib-letsencrypt:/var/lib/letsencrypt
+  proxy:
+    image: nginx:1.23
+    depends_on:
+      - certbot
+    ports:
+      - 8443:443
+    environment:
+      - TARGET_HOST=n8n
+      - TARGET_PORT=5678
+      - PUBLIC_DNS=${PUBLIC_DNS}
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    networks:
+      - backend
+  n8n:
+    image: n8nio/n8n
+    command: n8n start
+    depends_on:
+      - db
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./n8n:/home/node/.n8n
+    networks:
+      - backend
+  db:
+    image: postgres:14.5
+    environment:
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - backend
+    volumes:
+      - db_storage:/var/lib/postgresql/data
+
+networks:
+  backend:
+    name: n8n-internal
+
+volumes:
+  db_storage: {}

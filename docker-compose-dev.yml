@@ -1,0 +1,10 @@
+services:
+  certbot:
+    image: alpine:latest
+    command: echo "skip"
+    volumes: []
+  proxy:
+    ports:
+      - 8880:80
+    volumes:
+      - ./nginx/templates-dev:/etc/nginx/templates
