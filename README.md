@@ -12,7 +12,12 @@ docker-compose --env-file=.env.dev -f docker-compose.yml -f docker-compose-dev.y
 
 ## Setup on server
 
-0. Clone repository to `/etc/docker-compose/n8n` directory (don't nest it).
+0. Clone repository to `/etc/docker-compose/n8n` directory:
+
+    ```bash
+    docker run -v /etc/docker-compose/:/workdir -w /workdir cmd.cat/git git clone https://github.com/radekl/n8n.git
+    ```
+
 1. Create `cert/ovh.ini` with contents:
 
     ```ini
@@ -24,12 +29,17 @@ docker-compose --env-file=.env.dev -f docker-compose.yml -f docker-compose-dev.y
     ```
 2. Create `.env` file with contents:
 
-```bash
-DB_PASSWORD=generate_random_password_for_db
-PUBLIC_DNS=your.domain.here
-```
+    ```bash
+    DB_PASSWORD=generate_random_password_for_db
+    PUBLIC_DNS=your.domain.here
+    ```
 
-3. Copy file `etc/systemd/system/docker-compose@.service` to `/etc/systemd/system/docker-compose@.service`
+3. Link file `etc/systemd/system/docker-compose@.service` to `/etc/systemd/system/docker-compose@.service`
+
+    ```bash
+    ln -s /etc/docker-compose/n8n/etc/systemd/system/docker-daemon@.service /etc/systemd/system/docker-daemon@.service
+    ```
+
 4. Reload systemd daemon: `systemctl daemon-reload`
 5. Enable n8n app `systemctl enable docker-compose@n8n`
 6. Start n8n app `systemctl start docker-compose@n8n`
