@@ -9,15 +9,15 @@ Type=simple
 TimeoutStartSec=15min
 Restart=always
 
-ExecStartPre=docker run --rm -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:1.29.2 pull --quiet --ignore-pull-failures
-ExecStartPre=docker run --rm -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:1.29.2 build --pull
+ExecStartPre=docker run --rm -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 pull --quiet --ignore-pull-failures
+ExecStartPre=docker run --rm -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 build --pull
 
-ExecStart=docker run --rm -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:1.29.2 up --remove-orphans
+ExecStart=docker run --rm -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 up --remove-orphans
 
-ExecStop=docker run --rm -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:1.29.2 down --remove-orphans
+ExecStop=docker run --rm -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 down --remove-orphans
 
-ExecReload=docker run --rm -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:1.29.2 pull --quiet --ignore-pull-failures
-ExecReload=docker run --rm -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:1.29.2 build --pull
+ExecReload=docker run --rm -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 pull --quiet --ignore-pull-failures
+ExecReload=docker run --rm -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 build --pull
 
 [Install]
 WantedBy=multi-user.target
