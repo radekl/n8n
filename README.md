@@ -37,7 +37,7 @@ docker-compose --env-file=.env.dev -f docker-compose.yml -f docker-compose-dev.y
 3. Link file `etc/systemd/system/docker-compose@.service` to `/etc/systemd/system/docker-compose@.service`
 
     ```bash
-    ln -s /etc/docker-compose/n8n/etc/systemd/system/docker-daemon@.service /etc/systemd/system/docker-daemon@.service
+    ln -s /etc/docker-compose/n8n/etc/systemd/system/docker-compose@.service /etc/systemd/system/docker-compose@.service
     ```
 
 4. Reload systemd daemon: `systemctl daemon-reload`
