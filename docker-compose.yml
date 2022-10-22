@@ -12,7 +12,7 @@ services:
       - ./cert/var-lib-letsencrypt:/var/lib/letsencrypt
   proxy:
     image: nginx:1.23
-    command: "/bin/sh -c 'while :; do sleep 6h; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: "/bin/sh -c 'while :; do sleep 6h; nginx -s reload; done & /docker-entrypoint.sh nginx -g \"daemon off;\"'"
     depends_on:
       - certbot
       - n8n
