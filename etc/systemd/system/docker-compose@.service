@@ -11,7 +11,7 @@ TimeoutStartSec=15min
 Environment=COMPOSE_VERSION=1.29.2
 
 ExecStartPre=docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/%i:/etc/docker-compose/%i -w /etc/docker-compose/%i docker/compose:${COMPOSE_VERSION} down --remove-orphans
-ExecStart=docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/%i:/etc/docker-compose/%i -w /etc/docker-compose/%i docker/compose:${COMPOSE_VERSION} up --force-recreate
+ExecStart=docker run --rm -i --init -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/%i:/etc/docker-compose/%i -w /etc/docker-compose/%i docker/compose:${COMPOSE_VERSION} up --force-recreate
 ExecStop=docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/%i:/etc/docker-compose/%i -w /etc/docker-compose/%i docker/compose:${COMPOSE_VERSION} stop
 
 [Install]
