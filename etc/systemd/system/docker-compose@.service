@@ -2,22 +2,17 @@
 Description=docker-compose %i service
 Requires=docker.service network-online.target
 After=docker.service network-online.target
+BindsTo=docker.service
 
 [Service]
 WorkingDirectory=/etc/docker-compose/%i
 Type=simple
 TimeoutStartSec=15min
-Restart=always
+Environment=COMPOSE_VERSION=1.29.2
 
-ExecStartPre=docker run --rm -it -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 pull --quiet --ignore-pull-failures
-ExecStartPre=docker run --rm -it -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 build --pull
-
-ExecStart=docker run --rm -it -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 up --remove-orphans
-
-ExecStop=docker run --rm -it -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 down --remove-orphans
-
-ExecReload=docker run --rm -it -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 pull --quiet --ignore-pull-failures
-ExecReload=docker run --rm -it -v /etc/docker-compose/%i:/workdir -v /var/run/docker.sock:/var/run/docker.sock -w /workdir docker/compose:1.29.2 build --pull
+ExecStartPre=docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:$COMPOSE_VERSION down --remove-orphans
+ExecStart=docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:$COMPOSE_VERSION up --force-recreate
+ExecStop=docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/%i:/workdir -w /workdir docker/compose:$COMPOSE_VERSION stop
 
 [Install]
 WantedBy=multi-user.target

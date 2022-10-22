@@ -9,14 +9,20 @@ Run docker
 docker-compose --env-file=.env.dev -f docker-compose.yml -f docker-compose-dev.yml up
 ```
 
+## Prerequisites
+
+1. Add `composer` user and group
+```bash
+useradd -g composer -m -d /etc/docker-compose composer
+```
+
+2. Clone repository to `/etc/docker-compose/n8n` directory:
+
+```bash
+docker run -v /etc/docker-compose/:/workdir -w /workdir cmd.cat/git git clone https://github.com/radekl/n8n.git
+```
 
 ## Setup on server
-
-0. Clone repository to `/etc/docker-compose/n8n` directory:
-
-    ```bash
-    docker run -v /etc/docker-compose/:/workdir -w /workdir cmd.cat/git git clone https://github.com/radekl/n8n.git
-    ```
 
 1. Create `cert/ovh.ini` with contents:
 
