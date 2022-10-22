@@ -25,6 +25,7 @@ services:
     environment:
       - TARGET_HOST=n8n
       - TARGET_PORT=5678
+      - PUBLIC_PORT=443
       - PUBLIC_DNS=${PUBLIC_DNS}
     volumes:
       - ./nginx/templates:/etc/nginx/templates
