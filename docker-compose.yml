@@ -8,17 +8,17 @@ services:
       --dns-ovh-credentials /ovh.ini
       --dns-ovh-propagation-seconds 60
       -d ${PUBLIC_DNS}
+      --agree-tos
+      -m ${CERTBOT_MAIL}
     volumes:
-      - type: bind
-        source: ./cert/ovh.ini
-        target: /ovh.ini
-        read_only: true
+      - ./cert/ovh.ini:/ovh.ini
       - ./cert/etc-letsencrypt:/etc/letsencrypt
       - ./cert/var-lib-letsencrypt:/var/lib/letsencrypt
   proxy:
     image: nginx:1.23
     depends_on:
       - certbot
+      - n8n
     ports:
       - 8443:443
     environment:
