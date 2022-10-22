@@ -2,7 +2,7 @@ version: '3'
 services:
   certbot:
     image: certbot/dns-ovh:v1.31.0
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 1m; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h; done;'"
     environment:
       - PUBLIC_DNS
       - CERTBOT_MAIL
