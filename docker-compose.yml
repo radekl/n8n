@@ -2,7 +2,7 @@ version: '3'
 services:
   certbot:
     image: certbot/dns-ovh:v1.31.0
-    entrypoint: |
+    entrypoint: >
       /bin/sh -c 'trap exit TERM; while :; do
       certbot certonly
         --dns-ovh
@@ -19,7 +19,7 @@ services:
       - ./cert/var-lib-letsencrypt:/var/lib/letsencrypt
   proxy:
     image: nginx:1.23
-    command: |
+    command: >
       /bin/sh -c 'while :; do
         sleep 21600;
         nginx -s reload;
