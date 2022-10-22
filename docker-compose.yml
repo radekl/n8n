@@ -5,13 +5,14 @@ services:
     command: |
       certonly
       --dns-ovh
-      --dns-ovh-credentials /ovh.ini
+      --dns-ovh-credentials /config/ovh.ini
       --dns-ovh-propagation-seconds 60
       -d ${PUBLIC_DNS}
       --agree-tos
+      --non-interactive
       -m ${CERTBOT_MAIL}
     volumes:
-      - ./cert/ovh.ini:/ovh.ini
+      - ./cert/config:/config
       - ./cert/etc-letsencrypt:/etc/letsencrypt
       - ./cert/var-lib-letsencrypt:/var/lib/letsencrypt
   proxy:
