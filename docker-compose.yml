@@ -25,6 +25,7 @@ services:
       - PUBLIC_DNS
     volumes:
       - ./nginx/templates:/etc/nginx/templates
+      - ./cert/etc-letsencrypt:/etc/letsencrypt
     networks:
       - backend
   n8n:
