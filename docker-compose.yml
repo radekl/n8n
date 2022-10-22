@@ -2,28 +2,17 @@ version: '3'
 services:
   certbot:
     image: certbot/dns-ovh:v1.31.0
-    entrypoint: >
-      /bin/sh -c 'trap exit TERM; while :; do
-      certbot certonly
-        --dns-ovh
-        --dns-ovh-credentials /config/ovh.ini
-        --dns-ovh-propagation-seconds 60
-        -d ${PUBLIC_DNS}
-        --agree-tos
-        --non-interactive
-        -m ${CERTBOT_MAIL} ;
-      sleep 43200; done;'
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 1m; done;'"
+    environment:
+      - PUBLIC_DNS
+      - CERTBOT_MAIL
     volumes:
       - ./cert/config:/config
       - ./cert/etc-letsencrypt:/etc/letsencrypt
       - ./cert/var-lib-letsencrypt:/var/lib/letsencrypt
   proxy:
     image: nginx:1.23
-    command: >
-      /bin/sh -c 'while :; do
-        sleep 21600;
-        nginx -s reload;
-      done & nginx -g "daemon off;"'
+    command: "/bin/sh -c 'while :; do sleep 6h; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
       - certbot
       - n8n
@@ -33,7 +22,7 @@ services:
       - TARGET_HOST=n8n
       - TARGET_PORT=5678
       - PUBLIC_PORT=443
-      - PUBLIC_DNS=${PUBLIC_DNS}
+      - PUBLIC_DNS
     volumes:
       - ./nginx/templates:/etc/nginx/templates
     networks:
