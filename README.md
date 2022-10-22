@@ -47,6 +47,19 @@ docker run -v /etc/docker-compose/:/workdir -w /workdir cmd.cat/git git clone ht
     ```
 
 4. Reload systemd daemon: `systemctl daemon-reload`
-5. Enable n8n app `systemctl enable docker-compose@n8n`
-6. Start n8n app `systemctl start docker-compose@n8n`
-7. Verify that your app works on a domain you've chosen.
+5. Init SSL keys with certbot
+    ```
+    docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/n8n:/etc/docker-compose/n8n -w /etc/docker-compose/n8n docker/compose:1.29.2 run --rm --entrypoint "\
+    certbot certonly \
+        --dns-ovh \
+        --dns-ovh-credentials /config/ovh.ini \
+        --dns-ovh-propagation-seconds 60 \
+        -m [CERTBOT_MAIL] \
+        -d [PUBLIC_DNS] \
+        --rsa-key-size 4096 \
+        --agree-tos \
+        --force-renewal" certbot
+    ```
+6. Enable n8n app `systemctl enable docker-compose@n8n`
+7. Start n8n app `systemctl start docker-compose@n8n`
+8. Verify that your app works on a domain you've chosen.
