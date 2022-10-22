@@ -10,6 +10,7 @@ services:
       - ./cert/config:/config
       - ./cert/etc-letsencrypt:/etc/letsencrypt
       - ./cert/var-lib-letsencrypt:/var/lib/letsencrypt
+    restart: always
   proxy:
     image: nginx:1.23
     command: "/bin/sh -c 'while :; do sleep 6h; nginx -s reload; done & /docker-entrypoint.sh nginx -g \"daemon off;\"'"
@@ -28,6 +29,7 @@ services:
       - ./cert/etc-letsencrypt:/etc/letsencrypt
     networks:
       - backend
+    restart: always
   n8n:
     image: n8nio/n8n
     command: n8n start
@@ -43,6 +45,7 @@ services:
       - ./n8n:/home/node/.n8n
     networks:
       - backend
+    restart: always
   db:
     image: postgres:14.5
     environment:
@@ -52,6 +55,7 @@ services:
       - backend
     volumes:
       - db_storage:/var/lib/postgresql/data
+    restart: always
 
 networks:
   backend:
