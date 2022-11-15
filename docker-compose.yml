@@ -59,9 +59,7 @@ services:
     restart: always
   cloudflared:
     image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run $TUNNEL_NAME
-    environment:
-      - CLOUDFLARE_API_TOKEN
+    command: tunnel --no-autoupdate run --credentials-file /home/nonroot/.cloudflared/${TUNNEL_NAME}.json $TUNNEL_NAME
     volumes:
       - ./.cloudflared:/home/nonroot/.cloudflared
     networks:
