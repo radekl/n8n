@@ -1,3 +1,4 @@
 cert/
 n8n/
 .env
+.cloudflared/
