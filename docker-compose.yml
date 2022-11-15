@@ -28,6 +28,7 @@ services:
       - ./nginx/templates:/etc/nginx/templates
       - ./cert/etc-letsencrypt:/etc/letsencrypt
     networks:
+      - frontend
       - backend
     restart: always
   n8n:
@@ -56,8 +57,17 @@ services:
     volumes:
       - db_storage:/var/lib/postgresql/data
     restart: always
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${TOKEN}
+    environment:
+      - CLOUDFLARE_API_TOKEN
+    networks:
+      - frontend
 
 networks:
+  frontend:
+    name: n8n-public
   backend:
     name: n8n-internal
 
