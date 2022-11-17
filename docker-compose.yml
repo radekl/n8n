@@ -32,7 +32,7 @@ services:
       - backend
     restart: always
   n8n:
-    image: n8nio/n8n
+    image: n8nio/n8n:0.203.0
     command: n8n start
     depends_on:
       - db
@@ -42,6 +42,7 @@ services:
       - DB_POSTGRESDB_HOST=db
       - DB_POSTGRESDB_USER=n8n
       - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD}
+      - WEBHOOK_TUNNEL_URL=${PUBLIC_DNS}
     volumes:
       - ./n8n:/home/node/.n8n
     networks:
@@ -58,7 +59,7 @@ services:
       - db_storage:/var/lib/postgresql/data
     restart: always
   cloudflared:
-    image: cloudflare/cloudflared:latest
+    image: cloudflare/cloudflared:2022.10.3
     command: tunnel --no-autoupdate run --credentials-file /home/nonroot/.cloudflared/${TUNNEL_NAME}.json $TUNNEL_NAME
     volumes:
       - ./.cloudflared:/home/nonroot/.cloudflared
