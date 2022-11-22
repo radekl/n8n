@@ -81,7 +81,7 @@ services:
       - db_storage:/var/lib/postgresql/data
     restart: always
   cloudflared:
-    image: cloudflare/cloudflared:2022.10.3
+    image: cloudflare/cloudflared:2022.11.0
     command: tunnel --no-autoupdate run --credentials-file /home/nonroot/.cloudflared/${TUNNEL_NAME}.json $TUNNEL_NAME
     volumes:
       - ./.cloudflared:/home/nonroot/.cloudflared
