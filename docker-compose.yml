@@ -31,7 +31,7 @@ services:
       - ./cert/etc-letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
   n8n:
-    image: n8nio/n8n:0.203.0
+    image: n8nio/n8n:0.208.0
     command: n8n start
     depends_on:
       - db
