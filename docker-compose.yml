@@ -84,7 +84,7 @@ services:
     image: cloudflare/cloudflared:2023.5.0
     command: tunnel --no-autoupdate run --credentials-file /home/nonroot/.cloudflared/${TUNNEL_NAME}.json $TUNNEL_NAME
     volumes:
-      - ./.cloudflared:/home/nonroot/.cloudflared
+      - /usr/local/etc/cloudflared:/home/nonroot/.cloudflared
     networks:
       - frontend
 
