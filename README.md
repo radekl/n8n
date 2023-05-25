@@ -6,60 +6,34 @@
 Run docker
 
 ```bash
-docker-compose --env-file=.env.dev -f docker-compose.yml -f docker-compose-dev.yml up
-```
-
-## Prerequisites
-
-1. Add `composer` user and group
-```bash
-useradd -g composer -m -d /etc/docker-compose composer
-```
-
-2. Clone repository to `/etc/docker-compose/n8n` directory:
-
-```bash
-docker run -v /etc/docker-compose/:/workdir -w /workdir cmd.cat/git git clone https://github.com/radekl/n8n.git
+docker-compose --env-file=.env.dev -f docker-compose.yml up
 ```
 
 ## Setup on server
 
-1. Create `cert/ovh.ini` with contents:
+Install and start [portainer.io](https://www.portainer.io/)
 
-    ```ini
-    # OVH API credentials used by Certbot
-    dns_ovh_endpoint = ovh-eu
-    dns_ovh_application_key = MDAwMDAwMDAwMDAw
-    dns_ovh_application_secret = MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-    dns_ovh_consumer_key = MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+1. Setup portainer volume
     ```
-2. Create `.env` file with contents:
-
-    ```bash
-    DB_PASSWORD=generate_random_password_for_db
-    PUBLIC_DNS=your.domain.here
+    docker volume create portainer_data
     ```
 
-3. Link file `etc/systemd/system/docker-compose@.service` to `/etc/systemd/system/docker-compose@.service`
-
-    ```bash
-    ln -s /etc/docker-compose/n8n/etc/systemd/system/docker-compose@.service /etc/systemd/system/docker-compose@.service
+2. Start portainer
+    ```
+    docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
     ```
 
-4. Reload systemd daemon: `systemctl daemon-reload`
-5. Init SSL keys with certbot
-    ```
-    docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock -v /etc/docker-compose/n8n:/etc/docker-compose/n8n -w /etc/docker-compose/n8n docker/compose:1.29.2 run --rm --entrypoint "\
-    certbot certonly \
-        --dns-ovh \
-        --dns-ovh-credentials /config/ovh.ini \
-        --dns-ovh-propagation-seconds 60 \
-        -m [CERTBOT_MAIL] \
-        -d [PUBLIC_DNS] \
-        --rsa-key-size 4096 \
-        --agree-tos \
-        --force-renewal" certbot
-    ```
-6. Enable n8n app `systemctl enable docker-compose@n8n`
-7. Start n8n app `systemctl start docker-compose@n8n`
-8. Verify that your app works on a domain you've chosen.
+3. Go through portainer wizard and create admin account
+
+4. Create a new stack app from git repository
+    
+    1. Go to local machine node
+    1. Go to stacks tab
+    1. Press `Add stack`
+    1. Choose Repository option
+    1. Type repository URL (i.e. this repository URL)
+    1. Type repository reference i.e. `refs/heads/master`
+    1. Set automatic updates
+    1. Setup environment variables as in `.env.dev` - adjust values to your setup
+    1. Press `Deploy the stack`
+

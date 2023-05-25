@@ -28,7 +28,7 @@ services:
       - frontend
       - backend
     volumes:
-      - ./cert/etc-letsencrypt:/letsencrypt
+      - n8n_letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
   n8n:
     image: n8nio/n8n:0.229.0
@@ -66,7 +66,7 @@ services:
       - WEBHOOK_URL=${WEBHOOK_TUNNEL_URL}
       - GENERIC_TIMEZONE
     volumes:
-      - ./n8n:/home/node/.n8n
+      - n8n:/home/node/.n8n
     networks:
       - backend
     restart: always
@@ -84,7 +84,7 @@ services:
     image: cloudflare/cloudflared:2023.5.0
     command: tunnel --no-autoupdate run --credentials-file /home/nonroot/.cloudflared/${TUNNEL_NAME}.json $TUNNEL_NAME
     volumes:
-      - /usr/local/etc/cloudflared:/home/nonroot/.cloudflared
+      - cloudflared:/home/nonroot/.cloudflared
     networks:
       - frontend
 
@@ -96,3 +96,6 @@ networks:
 
 volumes:
   db_storage: {}
+  cloudflared: {}
+  n8n: {}
+  n8n_letsencrypt: {}
